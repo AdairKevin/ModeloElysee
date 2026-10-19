@@ -1,0 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Pinyon+Script&family=Montserrat:wght@300;400&display=swap");
+/* Paleta Élysée: marfil, champagne, dorado y blanco cálido. Edita aquí colores y tipografías */
+:root {
+  --color-primary: #a8834a;
+  --color-secondary: #e9dcc3;
+  --color-accent: #c9a96e;
+  --color-bg: #fbf7ef;
+  --color-card: #fffdf8;
+  --color-text: #5a4a36;
+  --font-title: "Cormorant Garamond", serif;
+  --font-script: "Pinyon Script", cursive;
+  --font-text: "Montserrat", sans-serif;
+  --gold-gradient: linear-gradient(135deg, #b8913f, #f3e2b3, #a8834a);
+  --paper-texture: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .6 0 0 0 0 .5 0 0 0 0 .35 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
