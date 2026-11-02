@@ -4,61 +4,116 @@ const DATOS = window.INVITACION;
 /* Cuenta regresiva: la fecha se cambia en evento.inicio de contenido.json */
 const fechaEvento = new Date(DATOS.evento.inicio).getTime();
 const ids = ["dias", "horas", "minutos", "segundos"];
-const timer =
-  document.getElementById("dias") &&
-  setInterval(() => {
-    const d = Math.max(0, fechaEvento - Date.now());
-    const valores = [
-      Math.floor(d / 86400000),
-      Math.floor((d % 86400000) / 3600000),
-      Math.floor((d % 3600000) / 60000),
-      Math.floor((d % 60000) / 1000),
-    ];
-    ids.forEach((id, i) => (document.getElementById(id).innerText = valores[i]));
-    if (d === 0) clearInterval(timer);
-  }, 1000);
+const actualizarTimer = () => {
+  const d = Math.max(0, fechaEvento - Date.now());
+  const valores = [
+    Math.floor(d / 86400000),
+    Math.floor((d % 86400000) / 3600000),
+    Math.floor((d % 3600000) / 60000),
+    Math.floor((d % 60000) / 1000),
+  ];
+  ids.forEach((id, i) => (document.getElementById(id).innerText = String(valores[i]).padStart(2, "0")));
+  if (d === 0) clearInterval(timer);
+};
+const timer = document.getElementById("dias") && setInterval(actualizarTimer, 1000);
+if (timer) actualizarTimer();
 
-/* Música */
+/* Música: el botón de la tarjeta y el flotante controlan la misma canción */
 const music = document.getElementById("music");
 const playPauseBtn = document.getElementById("playPauseBtn");
 const progressBar = document.getElementById("progressBar");
+const musicaFlotante = document.getElementById("musicaFlotante");
+const alternarMusica = () => (music.paused ? music.play().catch(() => {}) : music.pause());
 if (music) {
   music.volume = 0.5;
-  playPauseBtn.addEventListener("click", () => (music.paused ? music.play() : music.pause()));
-  music.addEventListener("play", () => (playPauseBtn.textContent = "⏸"));
-  music.addEventListener("pause", () => (playPauseBtn.textContent = "▶"));
+  [playPauseBtn, musicaFlotante].forEach((b) => b && b.addEventListener("click", alternarMusica));
+  const marcar = (sonando) =>
+    [playPauseBtn, musicaFlotante].forEach((b) => b && b.classList.toggle("sonando", sonando));
+  music.addEventListener("play", () => marcar(true));
+  music.addEventListener("pause", () => marcar(false));
   music.addEventListener("timeupdate", () => {
-    progressBar.style.width = (music.currentTime / music.duration) * 100 + "%";
+    if (music.duration) progressBar.style.width = (music.currentTime / music.duration) * 100 + "%";
   });
 }
 
-/* Sobre */
-document.getElementById("openEnvelope").addEventListener("click", () => {
-  document.querySelector(".envelope").classList.add("open");
-  if (music) music.play().catch(() => {});
-  setTimeout(() => {
-    document.getElementById("envelopeScreen").classList.add("fade-out");
-    document.getElementById("invitationContent").classList.remove("hidden");
-  }, 1200);
+/* Nombres de la portada: cada letra aparece una por una */
+let letraIndice = 0;
+document.querySelectorAll(".nombres-reveal .nombre").forEach((nombre) => {
+  const texto = nombre.textContent;
+  nombre.textContent = "";
+  [...texto].forEach((caracter) => {
+    const span = document.createElement("span");
+    span.className = "letra";
+    span.style.setProperty("--i", letraIndice++);
+    span.textContent = caracter === " " ? " " : caracter;
+    nombre.appendChild(span);
+  });
 });
 
-/* Galería */
-const sliderTrack = document.getElementById("sliderTrack");
-if (sliderTrack) {
-  const total = sliderTrack.children.length;
-  const contenedor = sliderTrack.parentElement;
+/* Sobre: se rompe el sello, se abre la solapa y sube la tarjeta */
+const sobrePantalla = document.getElementById("envelopeScreen");
+document.body.classList.add("bloqueado");
+document.getElementById("openEnvelope").addEventListener("click", () => {
+  document.getElementById("sobre").classList.add("open");
+  if (music) music.play().catch(() => {});
+  setTimeout(() => {
+    document.getElementById("invitationContent").classList.remove("hidden");
+    window.scrollTo(0, 0);
+    sobrePantalla.classList.add("fade-out");
+    document.body.classList.remove("bloqueado");
+    requestAnimationFrame(() => document.body.classList.add("iniciada"));
+    if (musicaFlotante) musicaFlotante.classList.add("mostrar");
+    setTimeout(() => sobrePantalla.remove(), 1400);
+  }, 2300);
+});
+
+/* Aparición suave de cada bloque al hacer scroll */
+const observador = new IntersectionObserver(
+  (entradas) =>
+    entradas.forEach((e) => {
+      if (e.isIntersecting) {
+        e.target.classList.add("visible");
+        observador.unobserve(e.target);
+      }
+    }),
+  { threshold: 0.15, rootMargin: "0px 0px -6% 0px" }
+);
+document.querySelectorAll("[data-revelar]").forEach((el) => observador.observe(el));
+
+/* Galería: tira con desplazamiento, puntos y avance automático */
+const galeria = document.getElementById("galeria");
+if (galeria) {
+  const slides = [...galeria.children];
+  const puntos = [...document.querySelectorAll("#galeriaPuntos button")];
   let actual = 0;
-  const ajustarAltura = () => {
-    const alto = sliderTrack.children[actual].offsetHeight;
-    if (alto) contenedor.style.height = alto + "px";
+  let tocada = false;
+  const ir = (i) => galeria.scrollTo({ left: slides[i].offsetLeft - (galeria.clientWidth - slides[i].offsetWidth) / 2, behavior: "smooth" });
+  const marcar = () => {
+    const centro = galeria.scrollLeft + galeria.clientWidth / 2;
+    actual = slides.reduce(
+      (mejor, s, i) =>
+        Math.abs(s.offsetLeft + s.offsetWidth / 2 - centro) <
+        Math.abs(slides[mejor].offsetLeft + slides[mejor].offsetWidth / 2 - centro)
+          ? i
+          : mejor,
+      0
+    );
+    puntos.forEach((p, i) => p.classList.toggle("activo", i === actual));
   };
-  [...sliderTrack.children].forEach((img) => img.addEventListener("load", ajustarAltura));
-  window.addEventListener("resize", ajustarAltura);
+  galeria.addEventListener("scroll", () => requestAnimationFrame(marcar), { passive: true });
+  ["touchstart", "pointerdown", "wheel"].forEach((ev) =>
+    galeria.addEventListener(ev, () => (tocada = true), { passive: true })
+  );
+  puntos.forEach((p) =>
+    p.addEventListener("click", () => {
+      tocada = true;
+      ir(Number(p.dataset.ir));
+    })
+  );
+  marcar();
   setInterval(() => {
-    actual = (actual + 1) % total;
-    sliderTrack.style.transform = `translateX(-${actual * 100}%)`;
-    ajustarAltura();
-  }, 3500);
+    if (!tocada && !document.hidden && document.body.classList.contains("iniciada")) ir((actual + 1) % slides.length);
+  }, 4500);
 }
 
 /* Confirmación por WhatsApp: el número va en confirmacion.whatsapp de contenido.json (ej. 5215512345678) */

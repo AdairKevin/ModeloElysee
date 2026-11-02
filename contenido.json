@@ -1,127 +1,172 @@
 {
-  "_instrucciones": "Aquí se cambian TODOS los textos, fotos, links y datos de la invitación. Para ocultar una sección pon su clave en false (ejemplo: \"musica\": false). Los textos aceptan <br> para saltos de línea. La fecha de evento.inicio la usa la cuenta regresiva.",
+  "_instrucciones": "Aquí se cambian TODOS los textos, fotos, links y datos de la invitación. Para ocultar una sección pon su clave en false (ejemplo: \"programa\": false). Los textos aceptan <br> para saltos de línea y <em> para cursivas. La fecha de evento.inicio la usa la cuenta regresiva. Las iniciales del monograma y del sello van en sobre.inicial1 y sobre.inicial2.",
   "pagina": {
-    "titulo": "Modelo Élysée"
+    "titulo": "Valentina & Sebastián · Élysée"
   },
   "evento": {
-    "inicio": "2027-01-01T16:00"
+    "inicio": "2027-06-12T17:00"
   },
   "sobre": {
-    "sello": "A&B",
-    "instruccion": "Toca el sello para abrir",
+    "encabezado": "Una invitación para usted",
+    "inicial1": "V",
+    "inicial2": "S",
+    "remitente": "Valentina & Sebastián",
+    "instruccion": "Toque el sello para abrir",
     "botonAria": "Abrir invitación"
   },
   "portada": {
-    "foto": "./assets/img/portada.jpg",
-    "fotoAlt": "Foto principal",
-    "evento": "Nuestra Boda",
-    "nombre1": "Novia",
+    "antetitulo": "Junto a sus familias",
+    "nombre1": "Valentina",
     "conector": "&",
-    "nombre2": "Novio"
+    "nombre2": "Sebastián",
+    "invitacion": "tienen el honor de invitarle<br>a celebrar su matrimonio",
+    "fecha": "Sábado 12 de junio de 2027",
+    "ciudad": "Guadalajara · Jalisco",
+    "bajarAria": "Ver la invitación"
+  },
+  "editorial": {
+    "foto": "./assets/img/portada.jpg",
+    "fotoAlt": "Valentina y Sebastián",
+    "numero": "N.º 01",
+    "seccion": "Le Mariage",
+    "titulo": "Una historia<br><em>escrita a mano</em>",
+    "texto": "Nos conocimos sin prisa y aprendimos a querernos con calma. Hoy queremos celebrar el comienzo de nuestra vida juntos con las personas que más queremos."
   },
   "musica": {
-    "archivo": "./assets/music/cancion.mp3",
-    "cancion": "Nombre de la canción",
-    "artista": "Artista",
-    "botonAria": "Reproducir música"
+    "archivo": "./assets/music/clair-de-lune.mp3",
+    "etiqueta": "En el ambiente",
+    "cancion": "Clair de Lune",
+    "artista": "Claude Debussy",
+    "botonAria": "Reproducir o pausar la música"
   },
   "dedicatoria": {
-    "texto": "Mensaje de los papás o anfitriones para los invitados.",
-    "firma": "— Firma"
+    "texto": "El amor es paciente, es bondadoso.<br>Todo lo disculpa, todo lo cree,<br>todo lo espera, todo lo soporta.",
+    "firma": "1 Corintios 13, 4-7"
   },
   "invitacion": {
-    "titulo": "Unimos nuestras vidas",
+    "antetitulo": "Con la bendición de Dios",
+    "titulo": "y de nuestros padres",
     "familia": [
       {
         "titulo": "Padres de la novia",
-        "nombres": [
-          "Nombre mamá",
-          "Nombre papá"
-        ]
+        "nombres": ["Mariana Ortega de la Vega", "Ricardo Álvarez Montiel"]
       },
       {
         "titulo": "Padres del novio",
-        "nombres": [
-          "Nombre mamá",
-          "Nombre papá"
-        ]
+        "nombres": ["Lucía Fernández Arriaga", "Andrés Castillo Ibarra"]
+      },
+      {
+        "titulo": "Padrinos de velación",
+        "nombres": ["Isabel y Fernando Ruiz"]
       }
     ],
     "fecha": {
-      "dia": "SÁBADO",
-      "fecha": "01 · ENE · 2027",
-      "hora": "16:00 hrs"
+      "dia": "Sábado",
+      "mes": "Junio",
+      "numero": "12",
+      "anio": "2027",
+      "hora": "Diecisiete horas"
     }
   },
   "cuentaRegresiva": {
-    "titulo": "Solo faltan",
+    "antetitulo": "Faltan",
+    "titulo": "para decir <em>sí</em>",
     "dias": "Días",
     "horas": "Horas",
-    "minutos": "Min",
-    "segundos": "Seg"
+    "minutos": "Minutos",
+    "segundos": "Segundos"
+  },
+  "programa": {
+    "antetitulo": "Le Programme",
+    "titulo": "El programa del día",
+    "momentos": [
+      { "hora": "17:00", "actividad": "Ceremonia religiosa", "detalle": "Parroquia de San José de Gracia" },
+      { "hora": "19:00", "actividad": "Cóctel de bienvenida", "detalle": "Terraza del jardín francés" },
+      { "hora": "20:30", "actividad": "Cena de gala", "detalle": "Gran salón" },
+      { "hora": "22:00", "actividad": "Primer baile y fiesta", "detalle": "Hasta que salga el sol" }
+    ]
   },
   "ubicaciones": {
+    "antetitulo": "Dónde",
+    "titulo": "Nos vemos en",
     "lugares": [
       {
         "titulo": "Ceremonia",
-        "hora": "16:00 hrs",
-        "lugar": "Nombre y dirección del lugar",
-        "mapa": "#",
+        "nombre": "Parroquia de San José de Gracia",
+        "hora": "17:00 hrs",
+        "direccion": "Av. Alcalde 1220, Centro, Guadalajara, Jal.",
+        "mapa": "https://maps.google.com/?q=Guadalajara+Jalisco",
         "boton": "Ver ubicación"
       },
       {
         "titulo": "Recepción",
-        "hora": "18:00 hrs",
-        "lugar": "Nombre y dirección del lugar",
-        "mapa": "#",
+        "nombre": "Hacienda Château Lumière",
+        "hora": "19:00 hrs",
+        "direccion": "Camino Real a Colima km 8, Tlajomulco, Jal.",
+        "mapa": "https://maps.google.com/?q=Tlajomulco+Jalisco",
         "boton": "Ver ubicación"
       }
     ]
   },
   "galeria": {
+    "antetitulo": "Portafolio",
+    "titulo": "Nuestros momentos",
     "fotos": [
-      {
-        "foto": "./assets/img/foto1.jpg",
-        "alt": "Foto 1"
-      },
-      {
-        "foto": "./assets/img/foto2.jpg",
-        "alt": "Foto 2"
-      },
-      {
-        "foto": "./assets/img/foto3.jpg",
-        "alt": "Foto 3"
-      }
+      { "foto": "./assets/img/foto1.jpg", "alt": "Foto 1", "pie": "La promesa" },
+      { "foto": "./assets/img/foto2.jpg", "alt": "Foto 2", "pie": "Bajo los arcos" },
+      { "foto": "./assets/img/foto3.jpg", "alt": "Foto 3", "pie": "El balcón" },
+      { "foto": "./assets/img/foto4.jpg", "alt": "Foto 4", "pie": "Luz de candelabros" }
     ]
   },
   "vestimenta": {
-    "titulo": "Vestimenta",
-    "texto": "Código de vestimenta y colores reservados."
+    "antetitulo": "Código de vestimenta",
+    "titulo": "Etiqueta rigurosa",
+    "codigo": "Smoking · Vestido largo",
+    "texto": "Le sugerimos tonos neutros y profundos. El color marfil está reservado para la novia.",
+    "colores": [
+      { "nombre": "Champagne", "color": "#D8C6A5" },
+      { "nombre": "Taupe", "color": "#5B5148" },
+      { "nombre": "Espresso", "color": "#292521" }
+    ]
   },
   "regalos": {
-    "titulo": "Mesa de regalos",
-    "texto": "Tu presencia es el mejor regalo."
+    "antetitulo": "Mesa de regalos",
+    "titulo": "Un detalle",
+    "texto": "Su presencia es nuestro mejor regalo. Si desea tener un detalle con nosotros:",
+    "opciones": [
+      { "nombre": "Liverpool", "detalle": "Evento 51234567" },
+      { "nombre": "Lluvia de sobres", "detalle": "El día de la recepción" }
+    ]
   },
   "confirmacion": {
-    "frase": "Los mejores momentos merecen ser compartidos",
-    "destacado": "¡Gracias por acompañarnos!",
-    "titulo": "Confirma tu asistencia",
+    "sigla": "R.S.V.P.",
+    "titulo": "Confirme su asistencia",
+    "texto": "Le agradeceremos confirmar antes del 1 de mayo de 2027.",
     "whatsapp": "",
     "campoNombre": "Nombre completo",
     "campoAsistentes": "Número de asistentes",
-    "campoMensaje": "Mensaje (opcional)",
+    "campoMensaje": "Un mensaje para los novios (opcional)",
     "boton": "Confirmar por WhatsApp",
     "mensajeWhatsapp": {
-      "saludo": "¡Hola! Confirmo mi asistencia a nuestra boda.",
+      "saludo": "¡Hola! Confirmo mi asistencia a la boda de Valentina y Sebastián.",
       "nombre": "Nombre",
       "asistentes": "Número de asistentes",
       "mensaje": "Mensaje"
     }
   },
+  "cierre": {
+    "foto": "./assets/img/cierre.jpg",
+    "fotoAlt": "Valentina y Sebastián al atardecer",
+    "frase": "À bientôt",
+    "texto": "Gracias por ser parte de nuestra historia.<br>Les esperamos con mucho cariño."
+  },
   "footer": {
-    "texto": "Diseñado por",
-    "marca": "Mirai",
+    "texto": "Invitación diseñada por",
+    "marca": "Mirai Contenido Digital",
     "link": "https://www.facebook.com/profile.php?id=61568997140138",
-    "anio": "@2026"
+    "slogan": "El futuro conecta.",
+    "instagram": "https://www.instagram.com/mirai.cdigital/",
+    "usuario": "@mirai.cdigital",
+    "anio": "© 2026"
   }
 }

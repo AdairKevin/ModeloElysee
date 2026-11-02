@@ -1,14 +1,37 @@
 /* Tablets y escritorio: la invitación se mantiene como columna centrada */
 @media (min-width: 768px) {
   body {
-    background: var(--color-secondary);
+    background: var(--paper-fibras), var(--paper-texture), var(--marfil-profundo);
   }
   .content {
-    background: var(--color-bg);
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 60px rgba(41, 37, 33, 0.14);
   }
   .envelope {
-    width: 400px;
-    height: 260px;
+    width: 360px;
+  }
+  .section-home {
+    min-height: min(100vh, 920px);
+  }
+}
+
+@media (max-width: 360px) {
+  section {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+  .time_number {
+    font-size: 38px;
+  }
+  .editorial-texto {
+    margin-left: 30px;
+    margin-right: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wax-seal,
+  .envelope-hint,
+  .home-bajar span {
+    animation: none;
   }
 }
