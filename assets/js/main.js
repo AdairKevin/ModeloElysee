@@ -55,6 +55,7 @@ const sobrePantalla = document.getElementById("envelopeScreen");
 document.body.classList.add("bloqueado");
 document.getElementById("openEnvelope").addEventListener("click", () => {
   document.getElementById("sobre").classList.add("open");
+  sobrePantalla.classList.add("abriendo");
   if (music) music.play().catch(() => {});
   setTimeout(() => {
     document.getElementById("invitationContent").classList.remove("hidden");
