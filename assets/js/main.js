@@ -18,6 +18,67 @@ const actualizarTimer = () => {
 const timer = document.getElementById("dias") && setInterval(actualizarTimer, 1000);
 if (timer) actualizarTimer();
 
+/* Desvanecido entre secciones: si una sección cambia de color respecto a la anterior,
+   empieza con el color de arriba y se funde al suyo (se calcula aquí para que funcione
+   aunque se oculten secciones en contenido.json) */
+const contenido = document.getElementById("invitationContent");
+/* Color y textura de papel de un bloque (si es transparente, se ve el fondo general) */
+const fondoDe = (el) => {
+  const estilo = getComputedStyle(el);
+  return estilo.backgroundColor === "rgba(0, 0, 0, 0)" ? fondoDe(contenido) : [estilo.backgroundColor, estilo.backgroundImage];
+};
+const bloques = [...contenido.querySelectorAll(":scope > section, :scope > footer")];
+bloques.forEach((el, i) => {
+  if (!i) return;
+  const [arriba, texturaArriba] = fondoDe(bloques[i - 1]);
+  const [propio] = fondoDe(el);
+  if (arriba === propio) return;
+  el.style.setProperty("--fondo-arriba", arriba);
+  el.style.setProperty("--textura-arriba", texturaArriba);
+  el.classList.add("con-desvanecido");
+  /* Si empieza con una foto a todo lo ancho (como el cierre), el desvanecido va encima de la foto;
+     si es oscura, el texto claro baja hasta donde ya terminó el desvanecido */
+  const [r, g, b] = propio.match(/\d+/g).map(Number);
+  if (el.firstElementChild?.tagName === "IMG") el.classList.add("desvanecido-sobre-foto");
+  else if (r + g + b < 300) el.classList.add("desvanecido-oscuro");
+});
+
+/* Calendario: dibuja el mes de evento.inicio, marca el día y arma los botones para guardar la fecha */
+const calendario = document.getElementById("calendario");
+if (calendario) {
+  const { inicio: textoInicio, duracionHoras, tituloCalendario, lugarCalendario } = DATOS.evento;
+  const inicio = new Date(textoInicio);
+  const fin = new Date(inicio.getTime() + (duracionHoras || 6) * 3600000);
+  const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+  const primerDia = new Date(inicio.getFullYear(), inicio.getMonth(), 1).getDay();
+  const diasMes = new Date(inicio.getFullYear(), inicio.getMonth() + 1, 0).getDate();
+  let celdas = ["D", "L", "M", "M", "J", "V", "S"].map((d) => `<span class="cal-dia-semana">${d}</span>`).join("");
+  celdas += "<span></span>".repeat(primerDia);
+  for (let d = 1; d <= diasMes; d++) celdas += `<span${d === inicio.getDate() ? ' class="cal-evento"' : ""}>${d}</span>`;
+  calendario.innerHTML = `<div class="cal-mes">${meses[inicio.getMonth()]} ${inicio.getFullYear()}</div><div class="cal-grid" aria-hidden="true">${celdas}</div>`;
+  calendario.setAttribute("role", "img");
+  calendario.setAttribute("aria-label", inicio.toLocaleDateString("es-MX", { weekday: "long", day: "numeric", month: "long", year: "numeric" }));
+
+  const fmt = (f) => f.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+  const ics = (t) => t.replace(/[\\,;]/g, "\\$&"); // el formato .ics exige escapar comas y punto y coma
+  document.getElementById("btnGoogleCal").href =
+    "https://calendar.google.com/calendar/render?action=TEMPLATE" +
+    `&text=${encodeURIComponent(tituloCalendario)}&dates=${fmt(inicio)}/${fmt(fin)}&location=${encodeURIComponent(lugarCalendario)}`;
+  document.getElementById("btnIcs").addEventListener("click", () => {
+    const archivo = [
+      "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//Mirai//Invitacion//ES", "BEGIN:VEVENT",
+      `UID:${Date.now()}@mirai`, `DTSTAMP:${fmt(new Date())}`, `DTSTART:${fmt(inicio)}`, `DTEND:${fmt(fin)}`,
+      `SUMMARY:${ics(tituloCalendario)}`, `LOCATION:${ics(lugarCalendario)}`,
+      "BEGIN:VALARM", "TRIGGER:-P1D", "ACTION:DISPLAY", `DESCRIPTION:${ics(tituloCalendario)}`, "END:VALARM",
+      "END:VEVENT", "END:VCALENDAR",
+    ].join("\r\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([archivo], { type: "text/calendar" }));
+    a.download = "evento.ics";
+    a.click();
+  });
+}
+
 /* Música: el botón de la tarjeta y el flotante controlan la misma canción */
 const music = document.getElementById("music");
 const playPauseBtn = document.getElementById("playPauseBtn");
@@ -65,18 +126,22 @@ document.getElementById("openEnvelope").addEventListener("click", () => {
     requestAnimationFrame(() => document.body.classList.add("iniciada"));
     if (musicaFlotante) musicaFlotante.classList.add("mostrar");
     setTimeout(() => sobrePantalla.remove(), 1400);
-  }, 2300);
+  }, 2600);
 });
 
 /* Aparición suave de cada bloque al hacer scroll */
 const observador = new IntersectionObserver(
+  /* Los que aparecen juntos entran escalonados (0.12s entre cada uno), no todos de golpe */
   (entradas) =>
-    entradas.forEach((e) => {
-      if (e.isIntersecting) {
-        e.target.classList.add("visible");
-        observador.unobserve(e.target);
-      }
-    }),
+    entradas
+      .filter((e) => e.isIntersecting)
+      .forEach((e, i) => {
+        const el = e.target;
+        el.style.transitionDelay = i * 0.12 + "s";
+        el.addEventListener("transitionend", () => (el.style.transitionDelay = ""), { once: true });
+        el.classList.add("visible");
+        observador.unobserve(el);
+      }),
   { threshold: 0.15, rootMargin: "0px 0px -6% 0px" }
 );
 document.querySelectorAll("[data-revelar]").forEach((el) => observador.observe(el));

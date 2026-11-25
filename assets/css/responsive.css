@@ -31,7 +31,7 @@
 @media (prefers-reduced-motion: reduce) {
   .wax-seal,
   .envelope-hint,
-  .home-bajar span {
+  .home-bajar::after {
     animation: none;
   }
 }

@@ -25,6 +25,50 @@
   color: var(--oro-viejo);
 }
 
+/* ===== DESVANECIDO ENTRE SECCIONES DE DISTINTO COLOR =====
+   main.js pone .con-desvanecido y --fondo-arriba (color de la sección anterior).
+   Paradas con curva suave para que no se note dónde empieza ni dónde termina. */
+.con-desvanecido {
+  --alto-desvanecido: 200px;
+  isolation: isolate; /* el desvanecido queda sobre el fondo pero debajo del contenido */
+}
+
+.con-desvanecido.desvanecido-sobre-foto::before {
+  z-index: 1;
+}
+
+.desvanecido-oscuro {
+  --alto-desvanecido: 260px;
+  padding-top: calc(88px + 180px);
+}
+
+.con-desvanecido::before {
+  content: "";
+  position: absolute;
+  top: -2px; /* tapa la costura de medio píxel con el fondo de la sección (se veía una línea) */
+  left: 0;
+  right: 0;
+  z-index: -1;
+  height: calc(var(--alto-desvanecido) + 2px);
+  /* Copia exacta del fondo de arriba (color + textura) que se va borrando con la máscara */
+  background-color: var(--fondo-arriba);
+  background-image: var(--textura-arriba);
+  --curva-desvanecido: linear-gradient(
+    180deg,
+    #000 0%,
+    rgba(0, 0, 0, 0.95) 14%,
+    rgba(0, 0, 0, 0.82) 28%,
+    rgba(0, 0, 0, 0.62) 43%,
+    rgba(0, 0, 0, 0.4) 57%,
+    rgba(0, 0, 0, 0.2) 71%,
+    rgba(0, 0, 0, 0.07) 86%,
+    transparent 100%
+  );
+  -webkit-mask-image: var(--curva-desvanecido);
+  mask-image: var(--curva-desvanecido);
+  pointer-events: none;
+}
+
 /* ===== SOBRE ===== */
 .envelope-screen {
   position: fixed;
@@ -65,7 +109,7 @@
 .envelope {
   position: relative;
   width: min(80vw, 340px);
-  aspect-ratio: 34 / 44;
+  aspect-ratio: 34 / 25;
   perspective: 1300px;
   transition: transform 1.2s var(--curva);
 }
@@ -93,7 +137,7 @@
   padding-top: 13%;
   background: var(--paper-texture), #f8f4ec;
   box-shadow: inset 0 0 0 8px #f8f4ec, inset 0 0 0 9px var(--linea), 0 2px 6px rgba(41, 37, 33, 0.1);
-  transition: transform 1.3s var(--curva) 0.95s;
+  transition: transform 1.3s var(--curva) 1.25s;
 }
 
 .sobre-tarjeta > * {
@@ -158,7 +202,8 @@
   z-index: 4;
   transform-origin: top center;
   transform-style: preserve-3d;
-  transition: transform 1s var(--curva) 0.35s, z-index 0s linear 0.85s;
+  /* Espera a que el sello se rompa; curva simétrica para que el cambio de capa caiga justo a 90° */
+  transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1) 0.5s, z-index 0s linear 0.95s;
   pointer-events: none;
 }
 
@@ -180,13 +225,26 @@
 .envelope-flap::after {
   background: var(--paper-texture), linear-gradient(180deg, #f7f2e9, #eee6d8);
   clip-path: polygon(0 0, 100% 0, 50% calc(100% - 2px));
+  transition: filter 0.45s ease-in 0.5s;
+}
+
+/* Luz: la cara exterior se oscurece al levantarse y el forro se aclara al caer hacia atrás */
+.envelope.open .envelope-flap::after {
+  filter: brightness(0.8);
+}
+
+.envelope.open .solapa-forro {
+  filter: brightness(1);
 }
 
 .solapa-forro {
   transform: rotateX(180deg);
+  filter: brightness(0.72);
+  transition: filter 0.45s ease-out 0.95s;
   background: repeating-linear-gradient(45deg, rgba(185, 154, 104, 0.22) 0 1px, transparent 1px 8px),
     repeating-linear-gradient(-45deg, rgba(185, 154, 104, 0.22) 0 1px, transparent 1px 8px), #e9dec9;
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  /* Triángulo invertido: al girar el forro y luego la solapa, queda con la base en el pliegue y la punta arriba */
+  clip-path: polygon(0 100%, 100% 100%, 50% 0);
 }
 
 /* Sello de lacre */
@@ -468,36 +526,46 @@
   margin-top: 12px;
 }
 
+/* "Desliza": aparece cuando termina la animación de la portada (la ciudad acaba a los ~4.8s) */
 .home-bajar {
   position: absolute;
-  bottom: 30px;
+  bottom: 34px;
   left: 50%;
-  width: 1px;
-  height: 38px;
-  background: var(--linea);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-left: 0.34em; /* compensa el letter-spacing para que quede centrado */
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--taupe);
   opacity: 0;
-  transition: opacity 1s ease 3.9s;
+  visibility: hidden;
+  transition: opacity 1s ease 4.8s, visibility 0s linear 4.8s;
 }
 
 .iniciada .home-bajar {
   opacity: 1;
+  visibility: visible;
 }
 
-.home-bajar span {
-  position: absolute;
-  left: -2px;
-  top: 0;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--oro-viejo);
-  animation: bajar 2.4s ease-in-out infinite;
+.home-bajar::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-right: 1px solid var(--oro-viejo);
+  border-bottom: 1px solid var(--oro-viejo);
+  transform: rotate(45deg);
+  animation: bajar 2s ease-in-out infinite;
 }
 
 @keyframes bajar {
-  0% { transform: translateY(0); opacity: 0; }
-  30% { opacity: 1; }
-  100% { transform: translateY(34px); opacity: 0; }
+  0%, 100% { transform: translateY(0) rotate(45deg); }
+  50% { transform: translateY(7px) rotate(45deg); }
 }
 
 /* ===== EDITORIAL ===== */
@@ -736,6 +804,102 @@
   color: var(--espresso);
 }
 
+/* ===== CALENDARIO (mismo fondo oscuro que la cuenta regresiva) ===== */
+.section-calendario {
+  background: var(--paper-texture), var(--espresso);
+  color: var(--champagne);
+}
+
+.section-calendario .titulo-seccion {
+  color: var(--marfil);
+  font-style: italic;
+}
+
+/* Calendario y cuenta regresiva se leen como un solo bloque oscuro, unidos por el separador */
+.section-calendario {
+  padding-bottom: 52px;
+}
+
+.section-calendario + .section-timer {
+  padding-top: 0;
+}
+
+.calendario {
+  max-width: 300px;
+  margin: 0 auto 36px;
+  padding: 26px 20px 20px;
+  border: 1px solid rgba(216, 198, 165, 0.32);
+  outline: 1px solid rgba(216, 198, 165, 0.14);
+  outline-offset: 5px;
+}
+
+.cal-mes {
+  margin-bottom: 16px;
+  font-family: var(--font-title);
+  font-style: italic;
+  font-size: 27px;
+  color: var(--marfil);
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  row-gap: 4px;
+  font-family: var(--font-title);
+  font-size: 18px;
+  font-variant-numeric: lining-nums;
+  color: var(--champagne);
+}
+
+.cal-grid span {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+}
+
+.cal-grid .cal-dia-semana {
+  aspect-ratio: auto;
+  padding-bottom: 8px;
+  font-family: var(--font-text);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--oro-viejo);
+}
+
+.cal-grid .cal-evento {
+  border-radius: 50%;
+  background: var(--champagne);
+  color: var(--espresso);
+  font-weight: 600;
+  box-shadow: 0 0 0 3px var(--espresso), 0 0 0 4px var(--oro-viejo);
+}
+
+.calendario-botones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+}
+
+.section-calendario .place-btn {
+  width: min(100%, 250px);
+  margin-top: 0;
+  border-color: var(--champagne);
+  background: transparent;
+  font-size: 11px;
+  color: var(--champagne);
+}
+
+.section-calendario .place-btn:hover {
+  background: var(--champagne);
+  color: var(--espresso);
+}
+
+.calendario-separador {
+  margin-top: 58px;
+}
+
 /* ===== CUENTA REGRESIVA ===== */
 .section-timer {
   background: var(--paper-texture), var(--espresso);
@@ -763,6 +927,46 @@
   line-height: 1.1;
   color: var(--marfil);
   font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* Foto enmarcada en dorado: mitad sobre el contador y mitad sobre la sección siguiente.
+   Alto de la imagen = 78% × 5/4 + 20px de marco, así que la mitad es 48.75% + 10px
+   (los % de margin se calculan sobre el ancho, por eso la cuenta sale exacta). */
+.timer-foto {
+  position: relative;
+  z-index: 2;
+  width: 78%;
+  margin: 64px auto calc(-48.75% - 10px);
+}
+
+.section-timer:has(.timer-foto) {
+  display: flow-root; /* evita que el margen negativo de la foto se salga de la sección */
+  padding-bottom: 0;
+}
+
+/* La sección de abajo deja espacio para la mitad de la foto y su pie */
+.section-timer:has(.timer-foto) + section {
+  padding-top: calc(48.75% + 64px);
+}
+
+.timer-foto img {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  padding: 9px;
+  border: 1px solid var(--oro-viejo);
+  outline: 1px solid rgba(185, 154, 104, 0.55); /* segunda línea con hueco transparente: funciona sobre oscuro y sobre marfil */
+  outline-offset: 5px;
+  object-fit: cover;
+  object-position: center 30%;
+  filter: grayscale(1) sepia(0.14) contrast(1.06) brightness(1.03);
+}
+
+.timer-foto figcaption {
+  margin-top: 22px;
+  font-family: var(--font-title);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--taupe); /* el pie queda sobre el fondo marfil */
 }
 
 .time_txt {

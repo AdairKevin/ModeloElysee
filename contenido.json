@@ -1,10 +1,13 @@
 {
-  "_instrucciones": "Aquí se cambian TODOS los textos, fotos, links y datos de la invitación. Para ocultar una sección pon su clave en false (ejemplo: \"programa\": false). Los textos aceptan <br> para saltos de línea y <em> para cursivas. La fecha de evento.inicio la usa la cuenta regresiva. Las iniciales del monograma y del sello van en sobre.inicial1 y sobre.inicial2.",
+  "_instrucciones": "Aquí se cambian TODOS los textos, fotos, links y datos de la invitación. Para ocultar una sección pon su clave en false (ejemplo: \"programa\": false). Los textos aceptan <br> para saltos de línea y <em> para cursivas. La fecha de evento.inicio la usan la cuenta regresiva y el calendario. Las iniciales del monograma y del sello van en sobre.inicial1 y sobre.inicial2.",
   "pagina": {
     "titulo": "Valentina & Sebastián · Élysée"
   },
   "evento": {
-    "inicio": "2027-06-12T17:00"
+    "inicio": "2027-06-12T17:00",
+    "duracionHoras": 7,
+    "tituloCalendario": "Boda de Valentina & Sebastián",
+    "lugarCalendario": "Guadalajara, Jalisco"
   },
   "sobre": {
     "encabezado": "Una invitación para usted",
@@ -22,7 +25,7 @@
     "invitacion": "tienen el honor de invitarle<br>a celebrar su matrimonio",
     "fecha": "Sábado 12 de junio de 2027",
     "ciudad": "Guadalajara · Jalisco",
-    "bajarAria": "Ver la invitación"
+    "desliza": "Desliza"
   },
   "editorial": {
     "foto": "./assets/img/portada.jpg",
@@ -68,13 +71,22 @@
       "hora": "Diecisiete horas"
     }
   },
+  "calendario": {
+    "antetitulo": "Réservez la date",
+    "titulo": "Guarde la <em>fecha</em>",
+    "botonGoogle": "Google Calendar",
+    "botonIcs": "Apple / Outlook"
+  },
   "cuentaRegresiva": {
     "antetitulo": "Faltan",
     "titulo": "para decir <em>sí</em>",
     "dias": "Días",
     "horas": "Horas",
     "minutos": "Minutos",
-    "segundos": "Segundos"
+    "segundos": "Segundos",
+    "foto": "./assets/img/foto2.jpg",
+    "fotoAlt": "Valentina y Sebastián",
+    "pie": "Cada día nos acerca al «sí»"
   },
   "programa": {
     "antetitulo": "Le Programme",

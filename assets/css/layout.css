@@ -62,6 +62,13 @@ section {
   text-align: center;
 }
 
+/* Cada bloque se encima 1px sobre el anterior: en celulares el borde cae en medio píxel
+   y se asomaba una línea del fondo de atrás (blanca entre secciones oscuras) */
+.content > section + section,
+.content > section + footer {
+  margin-top: -1px;
+}
+
 h1,
 h2,
 h3 {
@@ -88,10 +95,61 @@ i {
   transform: none;
 }
 
+/* Separadores: se dibujan desde el centro */
+[data-revelar="trazo"] {
+  transform: scaleX(0.2);
+  transition-duration: 1.6s;
+}
+
+/* Galería: entra deslizándose desde la derecha */
+[data-revelar="lado"] {
+  transform: translateX(40px);
+  transition-duration: 1.5s;
+}
+
+/* Fotos: se abren como cortina desde el centro mientras suben */
+[data-revelar="foto"] {
+  transition-duration: 1.4s;
+}
+
+[data-revelar="foto"] img,
+img[data-revelar="foto"] {
+  clip-path: inset(9% 7% 9% 7%);
+  transition: clip-path 1.8s var(--curva), opacity 1.4s var(--curva), transform 1.4s var(--curva);
+}
+
+/* inset negativo para no recortar el marco (outline) de la foto del contador */
+[data-revelar="foto"].visible img,
+img[data-revelar="foto"].visible {
+  clip-path: inset(-12px);
+}
+
+/* Día del evento en el calendario: el círculo aparece al final */
+.cal-evento {
+  transform: scale(0.4);
+  opacity: 0;
+}
+
+.calendario.visible .cal-evento {
+  animation: marcar-dia 0.9s var(--curva) 0.7s forwards;
+}
+
+@keyframes marcar-dia {
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  [data-revelar] {
+  [data-revelar],
+  [data-revelar] img,
+  .calendario .cal-evento,
+  .calendario.visible .cal-evento {
     opacity: 1;
     transform: none;
+    clip-path: none;
     transition: none;
+    animation: none;
   }
 }
